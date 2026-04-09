@@ -45,9 +45,11 @@ ffbuild_dockerbuild() {
     make install DESTDIR="$FFBUILD_DESTDIR"
 
     if [[ $TARGET == win* ]]; then
-        rm "$FFBUILD_DESTPREFIX"/{bin/libxvidcore.dll,lib/libxvidcore.dll.a}
+        rm -f "$FFBUILD_DESTPREFIX"/{bin/libxvidcore.dll,lib/libxvidcore.dll.a}
+        rm -f "$FFBUILD_DESTPREFIX"/{bin/xvidcore.dll,lib/xvidcore.dll.a}
     elif [[ $TARGET == linux* ]]; then
-        rm "$FFBUILD_DESTPREFIX"/lib/libxvidcore.so*
+        rm -f "$FFBUILD_DESTPREFIX"/lib/libxvidcore.so*
+        rm -f "$FFBUILD_DESTPREFIX"/lib/xvidcore.so*
     fi
 }
 

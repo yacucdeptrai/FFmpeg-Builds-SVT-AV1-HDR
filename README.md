@@ -7,6 +7,17 @@ The minimum supported version is Windows 10 22H2, no guarantees on anything olde
 
 Linux builds are targetting RHEL/CentOS 8 (glibc-2.28 + linux-4.18) and anything more recent.
 
+## Lineage (vghuy17ck1)
+
+Encoder sources use [`juliobbv-p/svt-av1-hdr`](https://github.com/juliobbv-p/svt-av1-hdr) via `scripts.d/50-svtav1.sh`. A parallel fork, [**vghuy17ck1/FFmpeg-Builds-SVT-AV1-HDR**](https://github.com/vghuy17ck1/FFmpeg-Builds-SVT-AV1-HDR), documented useful changes that are worth porting when touching dependencies or CI:
+
+- **SVT-AV1**: HDR-focused pins and occasional **psyex**-style variants; watch upstream **API breaks** when bumping commits.
+- **CI / variants**: **nonfree** matrix coverage alongside GPL builds.
+- **Windows static builds**: workarounds for **OpenCL** (`DllMain` clashes), **libssh** global symbols, and **winarm64** MinGW header overrides.
+- **Stack hygiene**: **libplacebo** with Vulkan **shim loader**, **Node** in base images, rolling **scripts.d** dependency updates.
+
+This repo generally tracks **newer FFmpeg release lines** (e.g. 8.1 patches under `patches/ffmpeg/`), extra **Linux** base images (mips64 / ppc64 / riscv64), and a wider **GitHub Actions** matrix than the vghuy fork snapshot—compare `scripts.d` and patches when merging ideas across forks.
+
 ## Auto-Builds
 
 Builds run daily at 22:00 UTC (or GitHubs idea of that time) and are automatically released on success.

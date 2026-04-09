@@ -1,7 +1,9 @@
 #!/bin/bash
 
-SCRIPT_REPO="https://svn.xvid.org/trunk/xvidcore"
-SCRIPT_REV="2202"
+# Official SVN at svn.xvid.org is often unavailable (HTTP 503). Use Debian's
+# immutable orig tarball for the same upstream 1.3.7 release (SVN used r2202).
+SCRIPT_URL="https://deb.debian.org/debian/pool/main/x/xvidcore/xvidcore_1.3.7.orig.tar.bz2"
+SCRIPT_SHA256="aeeaae952d4db395249839a3bd03841d6844843f5a4f84c271ff88f7aa1acff7"
 
 ffbuild_enabled() {
     [[ $VARIANT == lgpl* ]] && return -1
@@ -9,7 +11,7 @@ ffbuild_enabled() {
 }
 
 ffbuild_dockerdl() {
-    echo "retry-tool sh -c \"rm -rf xvid && svn --non-interactive checkout --username 'anonymous' --password '' '${SCRIPT_REPO}@${SCRIPT_REV}' xvid\" && cd xvid"
+    echo "retry-tool sh -c \"rm -rf xvid xvidcore.tar.bz2 && wget -qO xvidcore.tar.bz2 '$SCRIPT_URL' && echo '$SCRIPT_SHA256  xvidcore.tar.bz2' | sha256sum -c - && mkdir xvid && tar -xjf xvidcore.tar.bz2 -C xvid --strip-components=1\" && cd xvid"
 }
 
 ffbuild_dockerbuild() {

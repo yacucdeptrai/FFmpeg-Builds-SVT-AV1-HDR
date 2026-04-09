@@ -27,6 +27,8 @@ ffbuild_dockerbuild() {
 
     local myconf=(
         --prefix="$FFBUILD_PREFIX"
+        --disable-shared
+        --enable-static
     )
 
     if [[ $TARGET == win* || $TARGET == linux* ]]; then
@@ -43,6 +45,13 @@ ffbuild_dockerbuild() {
     ./configure "${myconf[@]}"
     make -j$(nproc)
     make install DESTDIR="$FFBUILD_DESTDIR"
+
+    # FFmpeg links using -lxvidcore; normalize possible archive names.
+    if [[ -f "$FFBUILD_DESTPREFIX/lib/xvidcore.a" && ! -f "$FFBUILD_DESTPREFIX/lib/libxvidcore.a" ]]; then
+        cp "$FFBUILD_DESTPREFIX/lib/xvidcore.a" "$FFBUILD_DESTPREFIX/lib/libxvidcore.a"
+    elif [[ -f "$FFBUILD_DESTPREFIX/lib/libxvidcore.dll.a" && ! -f "$FFBUILD_DESTPREFIX/lib/libxvidcore.a" ]]; then
+        cp "$FFBUILD_DESTPREFIX/lib/libxvidcore.dll.a" "$FFBUILD_DESTPREFIX/lib/libxvidcore.a"
+    fi
 
     if [[ $TARGET == win* ]]; then
         rm -f "$FFBUILD_DESTPREFIX"/{bin/libxvidcore.dll,lib/libxvidcore.dll.a}
